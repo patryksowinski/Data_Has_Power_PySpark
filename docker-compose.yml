@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+    mysql:
+      image: mysql:5.7
+      volumes:
+        - ./data:/docker-entrypoint-initdb.d
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: uber-secret-pass-set
+        MYSQL_PASSWORD: uber-secret-pass-set
+        MYSQL_USER: dbuser
+        MYSQL_INITDB_SKIP_TZINFO: 1
+      ports:
+        - 3306:3306
+      networks:
+        - local
+
+    pyspark:
+      image: jupyter/pyspark-notebook
+      volumes:
+        - ./data_pyspark
+      ports:
+        - 8888:8888
+        - 8080:8080
+        - 7077:7077
+        - 4040:4040
+      environment:
+        - JUPYTER_HOST_IP=0.0.0.0
+        - JUPYTER_PORT=8888
+networks:
+  local:
+    name: py-pipeline
